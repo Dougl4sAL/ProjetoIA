@@ -5,7 +5,7 @@ class ImageLoader:
     """Responsável por carregar e pré-processar as imagens."""
     
     def load_image(self, path):
-        """Carrega uma imagem do disco."""
+        """Carrega uma imagem."""
         if not os.path.exists(path):
             raise FileNotFoundError(f"Imagem não encontrada: {path}")
         
@@ -15,5 +15,6 @@ class ImageLoader:
         return image
 
     def to_grayscale(self, image):
-        """Converte imagem para tons de cinza (necessário para Haar Cascade)."""
+        """Converte imagem para tons de cinza.
+        Necessário porque o classificador Haar Cascade opera em imagens em escala de cinza."""
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
