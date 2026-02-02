@@ -1,49 +1,43 @@
-from src.loader import ImageLoader
-from src.detector import CarDetector
-from src.visualizer import Visualizer
+from src.carregador import CarregadorImagem
+from src.detector import DetectorCarro
+from src.visualizador import Visualizador
 
 def main():
-    XML_PATH = 'data/cars.xml'
-    
-    # Lista de imagens para processar
-    IMAGE_FILES = ['test_image1.jpg', 'test_image2.jpg', 'test_image3.jpg']
+    CAMINHO_XML = 'data/cars.xml'
+    ARQUIVOS_IMAGEM = ['imagem1.jpg', 'imagem2.jpg', 'imagem3.jpg']
 
     try:
-        loader = ImageLoader()
-        detector = CarDetector(XML_PATH)
-        vis = Visualizer()
+        carregador = CarregadorImagem()
+        detector = DetectorCarro(CAMINHO_XML)
+        visualizador = Visualizador()
         
-        print(f"Iniciando processamento de {len(IMAGE_FILES)} imagens...\n")
+        print(f"Iniciando processamento de {len(ARQUIVOS_IMAGEM)} imagens...\n")
 
-        # 2. Loop para processar cada imagem da lista
-        for i, image_name in enumerate(IMAGE_FILES, 1):
-            image_path = f'data/{image_name}'
-            print(f"--- [{i}/{len(IMAGE_FILES)}] Processando: {image_name} ---")
+        for i, nome_imagem in enumerate(ARQUIVOS_IMAGEM, 1):
+            caminho_imagem = f'data/{nome_imagem}'
+            print(f"--- [{i}/{len(ARQUIVOS_IMAGEM)}] Processando: {nome_imagem} ---")
 
             try:
-                # Carregar e Processar
-                original_img = loader.load_image(image_path)
-                gray_img = loader.to_grayscale(original_img)
+                imagem_original = carregador.carregar_imagem(caminho_imagem)
+                imagem_cinza = carregador.para_escala_cinza(imagem_original)
 
-                # Detectar
-                results = detector.detect(gray_img)
-                print(f">> {len(results)} carros detectados.")
+                resultados = detector.detectar(imagem_cinza)
+                print(f">> {len(resultados)} carros detectados.")
 
-                # Visualizar
-                final_img = vis.draw_detections(original_img, results)
+                imagem_final = visualizador.desenhar_deteccoes(imagem_original, resultados)
                 
-                print("Visualize a janela e pressione QUALQUER TECLA para ir para a próxima imagem...")
-                vis.show_results(final_img) # O código pausa aqui até você apertar uma tecla
+                print("Pressione QUALQUER TECLA para ir para a próxima imagem...")
+                visualizador.mostrar_resultados(imagem_final)
 
             except FileNotFoundError:
-                print(f"ERRO: A imagem '{image_name}' não foi encontrada na pasta data/.")
+                print(f"ERRO: A imagem '{nome_imagem}' não foi encontrada.")
             except Exception as e:
-                print(f"ERRO ao processar '{image_name}': {e}")
+                print(f"ERRO ao processar '{nome_imagem}': {e}")
             
             print("=" * 40)
 
     except Exception as e:
-        print(f"Erro crítico na inicialização do sistema: {e}")
+        print(f"Erro crítico: {e}")
 
 if __name__ == "__main__":
     main()
